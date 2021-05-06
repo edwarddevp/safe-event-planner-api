@@ -1,4 +1,4 @@
-# Documentation of services module task list
+# Documentation of Safe Event Planner api
 ### Table of contents
 **[Token](#token)**<br>
 **[Register](#register)**<br>
