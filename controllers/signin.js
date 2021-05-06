@@ -1,26 +1,72 @@
-const handleSignin = (db, bcrypt) => (req, res) => {
+const handleSignin = (db, bcrypt, jwt) => (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(400).json('incorrect form submission');
+        return res.status(400).json({
+      "success": false,
+      "code": 400,
+      "data": {},
+      "message": "FormError",
+      "errors": {
+          "error": [
+            "incorrect form submission"
+          ]
+      }
+  });
   }
-  db.select('email', 'hash').from('login')
-    .where('email', '=', email)
-    .then(data => {
-      const isValid = bcrypt.compareSync(password, data[0].hash);
+
+  db("login")
+    .join("users", "users.id", "login.userid")
+    .select("users.id", "users.name", "users.email", "login.hash")
+    .where("email", "=", email)
+    .then((data) => {
+      const { hash, ...rest } = data[0];
+
+      const isValid = bcrypt.compareSync(password, hash);
       if (isValid) {
-        return db.select('*').from('users')
-          .where('email', '=', email)
-          .then(user => {
-            res.json(user[0])
-          })
-          .catch(err => res.status(400).json('unable to get user'))
+        jwt.sign(
+          { user: rest },
+          "secretkey",
+          { expiresIn: "30 days" },
+          (err, token) => {
+            res.json({
+              code: 200,
+              data: {
+                token: token,
+              },
+              message: "Ok",
+              success: true,
+            });
+          }
+        );
       } else {
-        res.status(400).json('wrong credentials')
+        res.status(401).json({
+          success: false,
+          code: 401,
+          data: {},
+          message: "PermissionError",
+          errors: {
+            error: [
+              "Authentication wrong credentials"
+            ],
+          },
+        });
       }
     })
-    .catch(err => res.status(400).json('wrong credentials'))
-}
+    .catch((err) =>
+      res.status(500).json({
+        success: false,
+        code: 500,
+        data: {},
+        message: "Internal Server Error",
+        errors: {
+          error: [
+            err
+          ],
+        },
+      })
+    );
+};
 
 module.exports = {
-  handleSignin: handleSignin
-}
+  handleSignin: handleSignin,
+};
