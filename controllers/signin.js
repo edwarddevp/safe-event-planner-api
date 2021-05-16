@@ -1,17 +1,18 @@
 const handleSignin = (db, bcrypt, jwt) => (req, res) => {
-  const { email, password } = req.body;
+  const {email, password} = req.body;
+
   if (!email || !password) {
-        return res.status(400).json({
+    return res.status(400).json({
       "success": false,
       "code": 400,
       "data": {},
       "message": "FormError",
       "errors": {
-          "error": [
-            "incorrect form submission"
-          ]
+        "error": [
+          "incorrect form submission"
+        ]
       }
-  });
+    });
   }
 
   db("login")
@@ -19,25 +20,39 @@ const handleSignin = (db, bcrypt, jwt) => (req, res) => {
     .select("users.id", "users.name", "users.email", "login.hash")
     .where("email", "=", email)
     .then((data) => {
-      const { hash, ...rest } = data[0];
-
-      const isValid = bcrypt.compareSync(password, hash);
-      if (isValid) {
-        jwt.sign(
-          { user: rest },
-          "secretkey",
-          { expiresIn: "30 days" },
-          (err, token) => {
-            res.json({
-              code: 200,
-              data: {
-                token: token,
-              },
-              message: "Ok",
-              success: true,
-            });
-          }
-        );
+      if (data.length) {
+        const {hash, ...rest} = data[0];
+        const isValid = bcrypt.compareSync(password, hash);
+        if (isValid) {
+          jwt.sign(
+            {user: rest},
+            "secretkey",
+            {expiresIn: "30 days"},
+            (err, token) => {
+              res.json({
+                code: 200,
+                data: {
+                  token: token,
+                  user: rest
+                },
+                message: "Ok",
+                success: true,
+              });
+            }
+          );
+        } else {
+          res.status(401).json({
+            success: false,
+            code: 401,
+            data: {},
+            message: "PermissionError",
+            errors: {
+              error: [
+                "Authentication wrong credentials"
+              ],
+            },
+          });
+        }
       } else {
         res.status(401).json({
           success: false,
@@ -51,6 +66,8 @@ const handleSignin = (db, bcrypt, jwt) => (req, res) => {
           },
         });
       }
+
+
     })
     .catch((err) =>
       res.status(500).json({

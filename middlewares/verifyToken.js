@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 function verifyToken(req, res, next) {
   // get auth header value
   const bearerHeader = req.headers["authorization"];
+  
   // Check if bearer is undefined
   if (typeof bearerHeader !== "undefined") {
     // Split at the space

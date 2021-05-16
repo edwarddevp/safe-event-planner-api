@@ -87,10 +87,11 @@ app.delete('/api/v1/categories/:id', verifyToken,  (req, res) => { category.hand
 
 // users
 app.get('/api/v1/users', verifyToken,  (req, res) => { users.handleGetUsers(req, res, db) }) // get all
+app.get('/api/v1/users/by-token', verifyToken,  (req, res) => { users.handleGetUserBySessionToken(req, res, db) }) // get user by token
 app.get('/api/v1/users/:id', verifyToken,  (req, res) => { users.handleGetUser(req, res, db) }) // get by id
 app.put('/api/v1/users/:id', verifyToken,  (req, res) => { users.handleUpdateUser(req, res, db) }) // update
 app.delete('/api/v1/users/:id', verifyToken,  (req, res) => { users.handleDeleteUser(req, res, db) }) // delete
-app.get('/api/v1/users/:id/clean', verifyToken,  (req, res) => { users.handlCleanUser(req, res, db) }) // clean
+app.get('/api/v1/users/:id/clean', verifyToken,  (req, res) => { users.handleCleanUser(req, res, db) }) // clean
 
 
 app.listen(3000, ()=> {

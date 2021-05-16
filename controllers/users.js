@@ -115,7 +115,7 @@ const handleDeleteUser = (req, res, db) => {
   );
 };
 
-const handlCleanUser = (req, res, db) => {
+const handleCleanUser = (req, res, db) => {
   const { id } = req.params;
 
   // Eliminamos todos los eventos de un usuario, y las medididas de seguridad de cada uno de estos eventos y sus invitados
@@ -205,6 +205,34 @@ const handleGetUser = (req, res, db) => {
     );
 };
 
+const handleGetUserBySessionToken = (req, res, db) => {
+  const { id } = req?.session?.user;
+  db("users")
+    .where("id", "=", id)
+    .returning("*")
+    .then((user) => {
+      res.json({
+        code: 200,
+        data: {
+          user: user[0],
+        },
+        message: "Ok",
+        success: true,
+      });
+    })
+    .catch((err) =>
+      res.status(500).json({
+        success: false,
+        code: 500,
+        data: {},
+        message: "Internal Server Error",
+        errors: {
+          error: [err],
+        },
+      })
+    );
+};
+
 const handleGetUsers = (req, res, db) => {
   db("users")
     .returning("*")
@@ -236,5 +264,6 @@ module.exports = {
   handleUpdateUser: handleUpdateUser,
   handleGetUser: handleGetUser,
   handleDeleteUser: handleDeleteUser,
-  handlCleanUser: handlCleanUser,
+  handleCleanUser: handleCleanUser,
+  handleGetUserBySessionToken: handleGetUserBySessionToken,
 };

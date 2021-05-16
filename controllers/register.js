@@ -50,7 +50,7 @@ const handleRegister = (req, res, db, bcrypt) => {
           data: {},
           message: "FormError",
           errors: {
-            error: ["Email already in use"],
+            error: ["There is already an account with the email provided"],
           },
         })
       : res.status(500).json({

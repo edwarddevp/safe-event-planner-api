@@ -179,7 +179,8 @@ Sign user into the app and respond token
     {
         "code": 200,
         "data": {
-          "token": "TOKEN_ID"
+          "token": "TOKEN_ID",
+          "user": {}
         },
         "message": "Ok",
         "success": true
