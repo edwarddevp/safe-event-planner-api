@@ -92,7 +92,7 @@ app.delete('/api/v1/users/:id', verifyToken,  (req, res) => { users.handleDelete
 app.get('/api/v1/users/:id/clean', verifyToken,  (req, res) => { users.handleCleanUser(req, res, db) }) // clean
 
 
-app.listen(3000, ()=> {
+app.listen(process.env.PORT || 3000, ()=> {
   console.log('app is running on port 3000');
 })
 
