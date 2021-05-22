@@ -14,9 +14,9 @@ const guests = require('./controllers/guests');
 const securityMeasures = require('./controllers/securityMeasures');
 const eventsSecurityMeasures = require('./controllers/eventsSecurityMeasures');
 
-
-
 const { verifyToken } = require('./middlewares/verifyToken');
+
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
 const db = knex({
   client: 'pg',
