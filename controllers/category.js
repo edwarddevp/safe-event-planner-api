@@ -44,6 +44,7 @@ const handleUpdateCategory = (req, res, db) => {
     .update({name})
     .returning("*")
     .then((category) => {
+     
       res.json({ category: category[0] });
     })
         .catch((err) => res.status(500).json({
