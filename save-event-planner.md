@@ -5,6 +5,7 @@
 **[SignIn](#signin)**<br>
 **[Events](#events)**<br>
 **[Guests](#guests)**<br>
+**[Tasks](#tasks)**<br>
 **[Security Measures](#security-measures)**<br>
 **[Events Security Measures](#events-security-measures)**<br>
 **[Categories](#categories)**<br>
@@ -577,7 +578,7 @@ Guests Crud
     {
         "code": 200,
         "data": {
-          "guests": [ ... ]
+          "tasks": [ ... ]
         },
         "message": "Ok",
         "success": true
@@ -813,6 +814,300 @@ Guests Crud
         "code": 200,
         "data": {
            "guestId": "TOKEN_ID"
+        },
+        "message": "Ok",
+        "success": true
+    }
+   ```
+
+* Error Response:
+   
+  * case: 500
+   ```json
+    {
+        "success": false,
+        "code": 500,
+        "data": {},
+        "message": "Internal Server Error",
+        "errors": {
+            "error": [
+                "errors"
+            ]
+        }
+    }
+  ```
+* Notes:
+ 
+  **None**
+
+----------------------------------------------------------------------------------
+
+
+
+## Tasks
+Tasks Crud
+
+**TOKEN IS REQUIRED**
+
+
+**Get tasks list**
+
+* Url
+
+  http://127.0.0.1:3000/api/v1/events/:eventId/tasks
+
+* Method
+
+  **GET**
+
+* Url Params
+
+  * :eventId = id event
+
+* Data Params
+
+    **None**
+  
+* Success Response:
+    * code: 200
+    ```json
+    {
+        "code": 200,
+        "data": {
+          "task": [ ... ]
+        },
+        "message": "Ok",
+        "success": true
+    }
+   ```
+
+* Error Response:
+
+  * code: 400
+  ```json
+    {
+        "success": false,
+        "code": 400,
+        "data": {},
+        "message": "FormError",
+        "errors": {
+            "error": [
+                "incorrect form submission"
+            ]
+        }
+    }
+  ```
+
+  or
+   
+  * case: 500
+   ```json
+    {
+        "success": false,
+        "code": 500,
+        "data": {},
+        "message": "Internal Server Error",
+        "errors": {
+            "error": [
+                "errors"
+            ]
+        }
+    }
+  ```
+* Notes:
+ 
+  **None**
+  
+**Get single tasks**
+
+* Url
+
+  http://127.0.0.1:3000/api/v1/events/:eventId/tasks/:id
+
+* Method
+
+  **GET**
+
+* Url Params
+
+  * :eventId = id event
+  * :id = id task
+
+* Data Params
+
+    **None**
+  
+* Success Response:
+    * code: 200
+    ```json
+    {
+        "code": 200,
+        "data": {
+          "task": { ... }
+        },
+        "message": "Ok",
+        "success": true
+    }
+   ```
+
+* Error Response:
+   
+  * case: 500
+   ```json
+    {
+        "success": false,
+        "code": 500,
+        "data": {},
+        "message": "Internal Server Error",
+        "errors": {
+            "error": [
+                "errors"
+            ]
+        }
+    }
+  ```
+* Notes:
+ 
+  **None**
+
+**Create tasks**
+
+* Url
+
+  http://127.0.0.1:3000/api/v1/events/:eventId/tasks
+
+* Method
+
+  **POST**
+
+* Url Params
+
+  * :eventId = id event
+
+* Data Params
+
+    ```json
+    {
+    "title": "title",
+    "description": "description"
+    }
+   ```
+  
+* Success Response:
+    * code: 200
+    ```json
+    {
+        "code": 200,
+        "data": {
+          "task": { ... }
+        },
+        "message": "Ok",
+        "success": true
+    }
+   ```
+
+* Error Response:
+   
+  * case: 500
+   ```json
+    {
+        "success": false,
+        "code": 500,
+        "data": {},
+        "message": "Internal Server Error",
+        "errors": {
+            "error": [
+                "errors"
+            ]
+        }
+    }
+  ```
+* Notes:
+ 
+  **None**
+
+**Update tasks**
+
+* Url
+
+  http://127.0.0.1:3000/api/v1/events/:eventId/tasks/:id
+
+* Method
+
+  **PUT**
+
+* Url Params
+
+  * :eventId = id event
+  * :id = id tasks
+
+* Data Params
+
+    ```json
+    {
+      "title": "title", // required
+      "description": " description"
+    }
+   ```
+  
+* Success Response:
+    * code: 200
+    ```json
+    {
+        "code": 200,
+        "data": {
+          "tasks": { ... }
+        },
+        "message": "Ok",
+        "success": true
+    }
+   ```
+
+* Error Response:
+   
+  * case: 500
+   ```json
+    {
+        "success": false,
+        "code": 500,
+        "data": {},
+        "message": "Internal Server Error",
+        "errors": {
+            "error": [
+                "errors"
+            ]
+        }
+    }
+  ```
+* Notes:
+ 
+  **None**
+
+**Delete tasks**
+* Url
+
+  http://127.0.0.1:3000/api/v1/events/:eventId/tasks/:id
+
+* Method
+
+  **DELETE**
+
+* Url Params
+
+  * :eventId = id event
+  * :id = id tasks
+
+* Data Params
+
+    **None**
+  
+* Success Response:
+    * code: 200
+    ```json
+    {
+        "code": 200,
+        "data": {
+           "tasksId": "TOKEN_ID"
         },
         "message": "Ok",
         "success": true
