@@ -2000,6 +2000,57 @@ Users Crud
  
   **None**
 
+**Get single user by token**
+
+* Url
+
+  http://127.0.0.1:3000/api/v1/users/by-token
+
+* Method
+
+  **GET**
+
+* Url Params
+
+  * :id = id user
+
+* Data Params
+
+    **None**
+  
+* Success Response:
+    * code: 200
+    ```json
+    {
+        "code": 200,
+        "data": {
+          "user": { ... }
+        },
+        "message": "Ok",
+        "success": true
+    }
+   ```
+
+* Error Response:
+   
+  * case: 500
+   ```json
+    {
+        "success": false,
+        "code": 500,
+        "data": {},
+        "message": "Internal Server Error",
+        "errors": {
+            "error": [
+                "errors"
+            ]
+        }
+    }
+  ```
+* Notes:
+ 
+  **None**
+
   **Clean user events**
 
 * Url

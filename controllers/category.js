@@ -138,12 +138,13 @@ const handleGetCategory = (req, res, db) => {
 
 const handleGetCategories = (req, res, db) => {
   db("category")
+  
     .returning("*")
     .then((categories) => {
       res.json({
         "code": 200,
         "data": {
-          "categories": categories[0]
+          "categories": categories
         },
         "message": "Ok",
         "success": true
