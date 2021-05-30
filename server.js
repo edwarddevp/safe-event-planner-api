@@ -16,13 +16,13 @@ const eventsSecurityMeasures = require('./controllers/eventsSecurityMeasures');
 
 const { verifyToken } = require('./middlewares/verifyToken');
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-
 const db = knex({
   client: 'pg',
   connection: {
-    connectionString : process.env.DATABASE_URL,
-    ssl:true
+    host: '127.0.0.1',
+    user: 'postgres',
+    password: '123',
+    database: 'safe_event_planner_db'
   }
 });
 
@@ -77,7 +77,7 @@ app.get('/api/v1/events/:eventId/securitymeasures/:id', verifyToken,  (req, res)
 app.post('/api/v1/events/:eventId/securitymeasures', verifyToken,  (req, res) => { eventsSecurityMeasures.handleSetEventSecurityMeasures(req, res, db) }) // create
 
 // category
-app.get('/api/v1/categories', verifyToken,  (req, res) => { category.handleGetCategories(req, res, db) }) // get all 
+app.get('/api/v1/categories', verifyToken,  (req, res) => { category.handleGetCategories(req, res, db) }) // get all
 app.get('/api/v1/categories/:id', verifyToken,  (req, res) => { category.handleGetCategory(req, res, db) }) // get by id
 app.post('/api/v1/categories', verifyToken,  (req, res) => { category.handleCreateCategory(req, res, db) }) // create
 app.put('/api/v1/categories/:id', verifyToken,  (req, res) => { category.handleUpdateCategory(req, res, db) }) // update
