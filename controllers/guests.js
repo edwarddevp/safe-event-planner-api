@@ -95,7 +95,7 @@ const handleDeleteGuest = (req, res, db) => {
       res.json({
         "code": 200,
         "data": {
-          "guestId": guest[0]
+          "guestId": guestId[0] 
         },
         "message": "Ok",
         "success": true

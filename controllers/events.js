@@ -260,6 +260,33 @@ const handleGetEvents = (req, res, db) => {
   const { session } = req;
 
   db("events")
+  .join(
+    "category",
+    "category.id",
+    "events.categoryid"
+
+  )
+  
+
+  .select(
+    "events.id",
+    "events.name",
+    "events.description",
+    "category.name AS categoyName",
+    "events.guestlimit",
+    "events.direction",
+    "events.startdate",
+    "events.enddate",
+    "events.createdat",
+    "events.userid",
+    "events.isactive",
+    "events.img",
+    "category.img AS categoryImg",
+    "category.imgBg AS categoryImgBg"
+   
+  ) 
+
+
     .where("userid", "=", session.user.id)
     .returning("*")
     .then((events) => {

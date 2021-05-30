@@ -13,6 +13,7 @@ const users = require('./controllers/users');
 const guests = require('./controllers/guests');
 const securityMeasures = require('./controllers/securityMeasures');
 const eventsSecurityMeasures = require('./controllers/eventsSecurityMeasures');
+const tasks = require('./controllers/tasks');
 
 const { verifyToken } = require('./middlewares/verifyToken');
 
@@ -63,6 +64,13 @@ app.get('/api/v1/events/:eventId/guests/:id', verifyToken,  (req, res) => { gues
 app.post('/api/v1/events/:eventId/guests', verifyToken,  (req, res) => { guests.handleCreateGuest(req, res, db) }) // create
 app.put('/api/v1/events/:eventId/guests/:id', verifyToken,  (req, res) => { guests.handleUpdateGuest(req, res, db) }) // update
 app.delete('/api/v1/events/:eventId/guests/:id', verifyToken,  (req, res) => { guests.handleDeleteGuest(req, res, db) }) // delete
+
+// tasks
+app.get('/api/v1/events/:eventId/tasks', verifyToken,  (req, res) => { tasks.handleGetTasks(req, res, db) } ) // Get all filter by tasks
+app.get('/api/v1/events/:eventId/tasks/:id', verifyToken,  (req, res) => { tasks.handleGetTask(req, res, db) }) // Get by id
+app.post('/api/v1/events/:eventId/tasks', verifyToken, (req, res) => { tasks.handleCreateTask(req, res, db) }) // Create
+app.put('/api/v1/events/:eventId/tasks/:id', verifyToken, (req, res) => { tasks.handleUpdateTask(req, res, db) }) // Update
+app.delete('/api/v1/events/:eventId/tasks/:id', verifyToken, (req, res) => { tasks.handleDeleteTask(req, res, db) }) // Delete
 
 // securityMeasures
 app.get('/api/v1/securitymeasures', verifyToken,  (req, res) => { securityMeasures.handleGetSecurityMeasures(req, res, db) }) // get all

@@ -20,7 +20,15 @@ const handleCreateCategory = (req, res, db) => {
     .into("category")
     .returning("*")
     .then((category) => {
-      res.json({ category: category[0] });
+      res.json({
+        "code": 200,
+        "data": {
+          "category": category[0]
+        },
+        "message": "Ok",
+        "success": true
+    });
+ 
     })
         .catch((err) => res.status(500).json({
       "success": false,
@@ -44,7 +52,15 @@ const handleUpdateCategory = (req, res, db) => {
     .update({name})
     .returning("*")
     .then((category) => {
-      res.json({ category: category[0] });
+      res.json({
+        "code": 200,
+        "data": {
+          "category": category[0]
+        },
+        "message": "Ok",
+        "success": true
+    });
+
     })
         .catch((err) => res.status(500).json({
       "success": false,
@@ -67,7 +83,15 @@ const handleDeleteCategory = (req, res, db) => {
     .del()
     .returning("id")
     .then((categoryId) => {
-      res.json({ categoryId: categoryId[0] });
+      res.json({
+        "code": 200,
+        "data": {
+          "categoryId:": categoryId[0]
+        },
+        "message": "Ok",
+        "success": true
+    });
+
     })
         .catch((err) => res.status(500).json({
       "success": false,
@@ -89,7 +113,15 @@ const handleGetCategory = (req, res, db) => {
     .where("id", "=", id)
     .returning("*")
     .then((category) => {
-      res.json({ category: category[0] });
+      res.json({
+        "code": 200,
+        "data": {
+          "category": category[0]
+        },
+        "message": "Ok",
+        "success": true
+    });
+
     })
         .catch((err) => res.status(500).json({
       "success": false,
@@ -106,9 +138,18 @@ const handleGetCategory = (req, res, db) => {
 
 const handleGetCategories = (req, res, db) => {
   db("category")
+  
     .returning("*")
     .then((categories) => {
-      res.json({ categories: categories });
+      res.json({
+        "code": 200,
+        "data": {
+          "categories": categories
+        },
+        "message": "Ok",
+        "success": true
+    });
+     
     })
         .catch((err) => res.status(500).json({
       "success": false,
