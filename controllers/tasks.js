@@ -154,6 +154,7 @@ const handleGetTasks = (req, res, db) => {
     const { eventId } = req.params;
     
     db("tasks")
+    .orderBy('id', 'desc')
       .where({ eventid: eventId })
       .returning("*")
       .then((tasks) => {

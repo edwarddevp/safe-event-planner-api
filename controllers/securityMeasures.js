@@ -1,6 +1,6 @@
 const handleCreateSecurityMeasure = (req, res, db) => {
   const { body } = req;
-  const { name, description, value } = body;
+  const { name, description, value, img } = body;
 
   if (!name || !value) {
     return res.status(400).json({
@@ -20,6 +20,7 @@ const handleCreateSecurityMeasure = (req, res, db) => {
         name,
         description,
         value,
+        img,
       })
       .into("securitymeasures")
       .returning("*")
@@ -58,29 +59,31 @@ const handleUpdateSecurityMeasure = (req, res, db) => {
       name,
       description,
       value,
+      img,
     })
     .returning("*")
     .then((securityMeasures) => {
       res.json({
-        code: 200,
-        data: {
-          securityMeasure: securityMeasures[0],
+        "code": 200,
+       "data": {
+         " securityMeasure": securityMeasures[0],
         },
-        message: "Ok",
-        success: true,
+        "message": "Ok",
+       "success": true,
       });
     })
     .catch((err) =>
-      res.status(500).json({
-        success: false,
-        code: 500,
-        data: {},
-        message: "Internal Server Error",
-        errors: {
-          error: [err],
-        },
-      })
-    );
+ res.status(500).json({
+      "success": false,
+      "code": 500,
+      "data": {},
+      " message": "Internal Server Error",
+        "errors": {
+          error: [
+            err
+          ]
+        }
+      }));
 };
 
 const handleDeleteSecurityMeasure = (req, res, db) => {

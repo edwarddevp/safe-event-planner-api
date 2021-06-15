@@ -56,7 +56,7 @@ app.get('/api/v1/events', verifyToken,  (req, res) => { events.handleGetEvents(r
 app.get('/api/v1/events/:id', verifyToken,  (req, res) => { events.handleGetEvent(req, res, db) }) // get by id
 app.post('/api/v1/events', verifyToken,  (req, res) => { events.handleCreateEvent(req, res, db) }) // create
 app.put('/api/v1/events/:id', verifyToken,  (req, res) => { events.handleUpdateEvent(req, res, db) }) // update
-app.delete('/api/v1/events/:id', verifyToken,  (req, res) => { events.handleDeleteEvent(req, res, db) }) // delete
+app.put('/api/v1/events/:id', verifyToken,  (req, res) => { events.handleUpdateEvents(req, res, db) }) // update isRemoved
 
 // guests
 app.get('/api/v1/events/:eventId/guests', verifyToken,  (req, res) => { guests.handleGetGuests(req, res, db) }) // get all filter by event Id
