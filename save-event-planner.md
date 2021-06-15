@@ -496,22 +496,29 @@ Events Crud
  
   **None**
 
-**Delete event**
+**Update event**
+
 * Url
 
-  http://127.0.0.1:3000/api/v1/events/:id
+ http://127.0.0.1:3000/api/v1/events/:id
+
 
 * Method
 
-  **DELETE**
+  **PUT**
 
 * Url Params
 
+ 
   * :id = id event
 
 * Data Params
 
-    **None**
+    ```json
+    {
+     "isRemove": false
+    }
+   ```
   
 * Success Response:
     * code: 200
@@ -519,7 +526,7 @@ Events Crud
     {
         "code": 200,
         "data": {
-          "eventId": "TOKEN_ID"
+          "guest": { ... }
         },
         "message": "Ok",
         "success": true
@@ -694,7 +701,7 @@ Guests Crud
     {
       "name": "guest 1", // required
       "email": "guest1@email.com",
-      "avatarimg": "img"
+      "phone": "0414526875"
     }
    ```
   
@@ -752,7 +759,7 @@ Guests Crud
     {
       "name": "guest 1", 
       "email": "guest1@email.com",
-      "avatarimg": "img"
+      "phone": "042516989"
     }
    ```
   
