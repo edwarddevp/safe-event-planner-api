@@ -303,8 +303,7 @@ const handleGetEvents = (req, res, db) => {
     .then((events) => {
       res.json({
         "code": 200,
-        "data": { 
-          recommendedGuestsTotal: events[0].guestlimit * 0.40,
+        "data": {
           "events": events,
          
         },
