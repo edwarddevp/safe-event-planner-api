@@ -18,7 +18,7 @@ const handleGetEventSecurityMeasures = (req, res, db) => {
       res.json({
         code: 200,
         data: {
-          securityMeasure: securityMeasures,
+          securityMeasure: securityMeasures
         },
         message: "Ok",
         success: true,
@@ -124,7 +124,6 @@ const handleSetEventSecurityMeasures = (req, res, db) => {
             }))
           )
           .then((data) => {
-            res.json("success");
             res.json({
               code: 200,
               data: {

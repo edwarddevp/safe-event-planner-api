@@ -1,7 +1,7 @@
 const handleCreateGuest = (req, res, db) => {
   const { eventId } = req.params;
   const { body } = req;
-  const { name, email, avatarimg } = body;
+  const { name, email, phone } = body;
 
   if (!name || !email) {
         return res.status(400).json({
@@ -19,7 +19,7 @@ const handleCreateGuest = (req, res, db) => {
 
   db.transaction((trx) => {
     trx
-      .insert({ name, email, avatarimg, eventid: eventId })
+      .insert({ name, email, phone, eventid: eventId })
       .into("guests")
       .returning("*")
       .then((guest) => {
@@ -50,14 +50,14 @@ const handleCreateGuest = (req, res, db) => {
 const handleUpdateGuest = (req, res, db) => {
   const { eventId } = req.params;
   const { id } = req.params;
-  const { name, email, avatarimg } = req.body;
+  const { name, email, phone } = req.body;
 
   db("guests")
     .where({ id: id, eventid: eventId })
     .update({
       name,
       email,
-      avatarimg,
+      phone,
     })
     .returning("*")
     .then((guest) => {
@@ -148,6 +148,8 @@ const handleGetGuests = (req, res, db) => {
   const { eventId } = req.params;
 
   db("guests")
+  .orderBy('id', 'desc')
+  
     .where({eventid: eventId})
     .returning("*")
     .then((guests) => {

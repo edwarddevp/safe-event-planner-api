@@ -37,7 +37,7 @@ const handleCreateEvent = (req, res, db) => {
         categoryid,
         createdat: new Date(),
         userid: session.user.id,
-        isactive: true,
+        isRemoved: false,
       })
       .into("events")
       .returning("*")
@@ -102,7 +102,7 @@ const handleUpdateEvent = (req, res, db) => {
     startdate,
     enddate,
     categoryid,
-    isActive,
+    isRemoved,
     securityMeasureIds,
   } = req.body;
 
@@ -117,7 +117,7 @@ const handleUpdateEvent = (req, res, db) => {
         startdate,
         enddate,
         categoryid,
-        isActive,
+        isRemoved,
       })
       .returning("*")
       .then((event) => {
@@ -185,35 +185,39 @@ const handleUpdateEvent = (req, res, db) => {
 }));
 };
 
-const handleDeleteEvent = (req, res, db) => {
-  const { id } = req.params;
+const handleUpdateEvents = (req, res, db) => {
+    const { id } = req.params;
+    const { isRemoved } = req.body;
+  
+    db("events")
+      .where({ id: id })
+      .update({
+        isRemoved,
+      })
+      .returning("*")
+      .then((events) => {
+        res.json({
+          "code": 200,
+          "data": {
+            "events": events[0]
+          },
+          "message": "Ok",
+          "success": true
+      });
+      })
+          .catch((err) => res.status(500).json({
+        "success": false,
+        "code": 500,
+        "data": {},
+        "message": "Internal Server Error",
+        "errors": {
+            "error": [
+              err
+            ]
+        }
+    }));
+  };
 
-  db("events")
-    .where("id", "=", id)
-    .del()
-    .returning("id")
-    .then((eventId) => {
-      res.json({
-        "code": 200,
-        "data": {
-          "eventId": eventId[0]
-        },
-        "message": "Ok",
-        "success": true
-    });
-    })
-    .catch((err) => res.status(500).json({
-      "success": false,
-      "code": 500,
-      "data": {},
-      "message": "Internal Server Error",
-      "errors": {
-          "error": [
-            err
-          ]
-      }
-  }));
-};
 
 const handleGetEvent = (req, res, db) => {
   const { id } = req.params;
@@ -225,19 +229,23 @@ const handleGetEvent = (req, res, db) => {
       db.raw(
         "ARRAY_AGG(eventsecuritymeasures.securitymeasuresid) as securitymeasuresids"
       ),
+        
     ])
-    .innerJoin(
+    .leftJoin(
       "eventsecuritymeasures",
       "events.id",
       "eventsecuritymeasures.eventid"
     )
     .groupBy("events.id")
+   
+
 
     .then((event) => {
       res.json({
         "code": 200,
         "data": {
-          "events": event[0]
+          "event": event[0],
+          recommendedGuestsTotal: event[0].guestlimit * 0.40
         },
         "message": "Ok",
         "success": true
@@ -258,13 +266,14 @@ const handleGetEvent = (req, res, db) => {
 
 const handleGetEvents = (req, res, db) => {
   const { session } = req;
-
+  
   db("events")
   .join(
     "category",
     "category.id",
-    "events.categoryid"
-
+    "events.categoryid",
+  
+  
   )
   
 
@@ -279,21 +288,24 @@ const handleGetEvents = (req, res, db) => {
     "events.enddate",
     "events.createdat",
     "events.userid",
-    "events.isactive",
+    "events.isRemoved",
+    "events.securityValue",
+    "events.securityCategory",
     "events.img",
     "category.img AS categoryImg",
-    "category.imgBg AS categoryImgBg"
-   
+    "category.imgBg AS categoryImgBg",
   ) 
 
 
-    .where("userid", "=", session.user.id)
+  .orderBy('id', 'desc')
+    .where("isRemoved","=", false )
     .returning("*")
     .then((events) => {
       res.json({
         "code": 200,
         "data": {
-          "events": events
+          "events": events,
+         
         },
         "message": "Ok",
         "success": true
@@ -317,5 +329,5 @@ module.exports = {
   handleUpdateEvent: handleUpdateEvent,
   handleGetEvents: handleGetEvents,
   handleGetEvent: handleGetEvent,
-  handleDeleteEvent: handleDeleteEvent,
+  handleUpdateEvents: handleUpdateEvents,
 };
