@@ -221,7 +221,6 @@ const handleUpdateEvents = (req, res, db) => {
 
 const handleGetEvent = (req, res, db) => {
   const { id } = req.params;
-
   db("events")
     .where("events.id", "=", id)
     .select([
@@ -229,7 +228,6 @@ const handleGetEvent = (req, res, db) => {
       db.raw(
         "ARRAY_AGG(eventsecuritymeasures.securitymeasuresid) as securitymeasuresids"
       ),
-        
     ])
     .leftJoin(
       "eventsecuritymeasures",
@@ -237,15 +235,15 @@ const handleGetEvent = (req, res, db) => {
       "eventsecuritymeasures.eventid"
     )
     .groupBy("events.id")
-   
-
-
     .then((event) => {
       res.json({
         "code": 200,
         "data": {
-          "event": event[0],
-          recommendedGuestsTotal: event[0].guestlimit * 0.40
+          "event": {
+            ...event[0],
+            recommendedGuestsTotal: event[0].guestlimit * 0.40
+          },
+
         },
         "message": "Ok",
         "success": true
@@ -272,11 +270,7 @@ const handleGetEvents = (req, res, db) => {
     "category",
     "category.id",
     "events.categoryid",
-  
-  
   )
-  
-
   .select(
     "events.id",
     "events.name",
@@ -294,9 +288,7 @@ const handleGetEvents = (req, res, db) => {
     "events.img",
     "category.img AS categoryImg",
     "category.imgBg AS categoryImgBg",
-  ) 
-
-
+  )
   .orderBy('id', 'desc')
     .where("isRemoved","=", false )
     .returning("*")
@@ -305,7 +297,6 @@ const handleGetEvents = (req, res, db) => {
         "code": 200,
         "data": {
           "events": events,
-         
         },
         "message": "Ok",
         "success": true
