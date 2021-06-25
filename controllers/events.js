@@ -241,7 +241,7 @@ const handleGetEvent = (req, res, db) => {
         "data": {
           "event": {
             ...event[0],
-            recommendedGuestsTotal: event[0].guestlimit * 0.40
+            recommendedGuestsTotal: Math.round(event[0].guestlimit * 0.40)
           },
 
         },
