@@ -287,7 +287,6 @@ const handleGetEvents = (req, res, db) => {
     "events.securityCategory",
     "events.img",
     "category.img AS categoryImg",
-    "category.imgBg AS categoryImgBg",
   )
   .orderBy('id', 'desc')
     .where("isRemoved","=", false )
