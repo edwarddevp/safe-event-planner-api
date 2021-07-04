@@ -1,39 +1,60 @@
-const handleUpdateUser = (req, res, db) => {
-  const { id } = req.params;
-  const { name, email } = req.body;
-
-  db("users")
-    .where({ id: id })
-    .update({
-      name,
-      email,
-    })
-    .returning("*")
-    .then((user) => {
-      res.json({
-        code: 200,
-        data: {
-          user: user[0],
-        },
-        message: "Ok",
-        success: true,
-      });
-    })
-    .catch((err) =>
-      res.status(500).json({
-        success: false,
-        code: 500,
-        data: {},
-        message: "Internal Server Error",
-        errors: {
-          error: [err],
-        },
+const handleUpdateUser = (req, res, db, bcrypt) => {
+  const {id} = req.params;
+  const {name, email, password} = req.body;
+  db.transaction((trx) => {
+    trx("users")
+      .where({id: id})
+      .update({
+        name,
+        email,
       })
-    );
+      .returning("*")
+      .then((user) => {
+        if (password) {
+          const hash = bcrypt.hashSync(password);
+          return trx("login")
+            .update({
+              hash: hash,
+            })
+            .where({userid: user[0]?.id})
+            .then(() => {
+              res.json({
+                code: 200,
+                data: {
+                  user: user[0],
+                },
+                message: "Ok",
+                success: true,
+              });
+            });
+        } else {
+          res.json({
+            code: 200,
+            data: {
+              user: user[0],
+            },
+            message: "Ok",
+            success: true,
+          });
+        }
+      })
+      .then(trx.commit)
+      .catch(trx.rollback);
+  }).catch((err) => res.status(500).json({
+    "success": false,
+    "code": 500,
+    "data": {},
+    "message": "Internal Server Error",
+    "errors": {
+      "error": [
+        err
+      ]
+    }
+  }));
 };
 
 const handleDeleteUser = (req, res, db) => {
-  const { id } = req.params;
+  const {id} = req.params;
 
   // Eliminamos todos los eventos de un usuario, y las medididas de seguridad de cada uno de estos eventos y sus invitados
   // y al final se elimina el usuario
@@ -116,7 +137,7 @@ const handleDeleteUser = (req, res, db) => {
 };
 
 const handleCleanUser = (req, res, db) => {
-  const { id } = req.params;
+  const {id} = req.params;
 
   // Eliminamos todos los eventos de un usuario, y las medididas de seguridad de cada uno de estos eventos y sus invitados
   db.transaction((trx) => {
@@ -177,7 +198,7 @@ const handleCleanUser = (req, res, db) => {
 };
 
 const handleGetUser = (req, res, db) => {
-  const { id } = req.params;
+  const {id} = req.params;
 
   db("users")
     .where("id", "=", id)
@@ -206,7 +227,7 @@ const handleGetUser = (req, res, db) => {
 };
 
 const handleGetUserBySessionToken = (req, res, db) => {
-  const { id } = req?.session?.user;
+  const {id} = req?.session?.user;
   db("users")
     .where("id", "=", id)
     .returning("*")

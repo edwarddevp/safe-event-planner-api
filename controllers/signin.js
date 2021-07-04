@@ -48,7 +48,7 @@ const handleSignin = (db, bcrypt, jwt) => (req, res) => {
             message: "PermissionError",
             errors: {
               error: [
-                "Authentication wrong credentials"
+                "Error de autenticación credenciales incorrectas"
               ],
             },
           });

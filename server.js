@@ -56,7 +56,7 @@ app.get('/api/v1/events', verifyToken,  (req, res) => { events.handleGetEvents(r
 app.get('/api/v1/events/:id', verifyToken,  (req, res) => { events.handleGetEvent(req, res, db) }) // get by id
 app.post('/api/v1/events', verifyToken,  (req, res) => { events.handleCreateEvent(req, res, db) }) // create
 app.put('/api/v1/events/:id', verifyToken,  (req, res) => { events.handleUpdateEvent(req, res, db) }) // update
-app.put('/api/v1/events/:id', verifyToken,  (req, res) => { events.handleUpdateEvents(req, res, db) }) // update isRemoved
+app.delete('/api/v1/events/:id', verifyToken,  (req, res) => { events.handleDeleteEvent(req, res, db) }) // update isRemoved
 
 // guests
 app.get('/api/v1/events/:eventId/guests', verifyToken,  (req, res) => { guests.handleGetGuests(req, res, db) }) // get all filter by event Id
@@ -95,7 +95,7 @@ app.delete('/api/v1/categories/:id', verifyToken,  (req, res) => { category.hand
 app.get('/api/v1/users', verifyToken,  (req, res) => { users.handleGetUsers(req, res, db) }) // get all
 app.get('/api/v1/users/by-token', verifyToken,  (req, res) => { users.handleGetUserBySessionToken(req, res, db) }) // get user by token
 app.get('/api/v1/users/:id', verifyToken,  (req, res) => { users.handleGetUser(req, res, db) }) // get by id
-app.put('/api/v1/users/:id', verifyToken,  (req, res) => { users.handleUpdateUser(req, res, db) }) // update
+app.put('/api/v1/users/:id', verifyToken,  (req, res) => { users.handleUpdateUser(req, res, db, bcrypt) }) // update
 app.delete('/api/v1/users/:id', verifyToken,  (req, res) => { users.handleDeleteUser(req, res, db) }) // delete
 app.get('/api/v1/users/:id/clean', verifyToken,  (req, res) => { users.handleCleanUser(req, res, db) }) // clean
 
