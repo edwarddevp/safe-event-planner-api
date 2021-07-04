@@ -1,5 +1,5 @@
 const handleCreateEvent = (req, res, db) => {
-  const { session, body } = req;
+  const {session, body} = req;
   const {
     name,
     description,
@@ -12,7 +12,7 @@ const handleCreateEvent = (req, res, db) => {
   } = body;
 
   if (!name || !startdate || !enddate) {
-        return res.status(400).json({
+    return res.status(400).json({
       "success": false,
       "code": 400,
       "data": {},
@@ -22,7 +22,7 @@ const handleCreateEvent = (req, res, db) => {
             "incorrect form submission"
           ]
       }
-  });
+    });
   }
 
   db.transaction((trx) => {
@@ -45,7 +45,7 @@ const handleCreateEvent = (req, res, db) => {
         if (securityMeasureIds && securityMeasureIds.length) {
           // insert security measures
           return trx("eventsecuritymeasures")
-            .where({ eventid: event?.[0]?.id })
+            .where({eventid: event?.[0]?.id})
             .del()
             .then(() => {
               return trx("eventsecuritymeasures")
@@ -63,7 +63,7 @@ const handleCreateEvent = (req, res, db) => {
                     },
                     "message": "Ok",
                     "success": true
-                });
+                  });
                 });
             });
         } else {
@@ -74,26 +74,26 @@ const handleCreateEvent = (req, res, db) => {
             },
             "message": "Ok",
             "success": true
-        });
+          });
         }
       })
       .then(trx.commit)
       .catch(trx.rollback);
-    }).catch((err) => res.status(500).json({
-      "success": false,
-      "code": 500,
-      "data": {},
-      "message": "Internal Server Error",
-      "errors": {
-          "error": [
-            err
-          ]
-      }
+  }).catch((err) => res.status(500).json({
+    "success": false,
+    "code": 500,
+    "data": {},
+    "message": "Internal Server Error",
+    "errors": {
+      "error": [
+        err
+      ]
+    }
   }));
 };
 
 const handleUpdateEvent = (req, res, db) => {
-  const { id } = req.params;
+  const {id} = req.params;
   const {
     name,
     description,
@@ -108,7 +108,7 @@ const handleUpdateEvent = (req, res, db) => {
 
   db.transaction((trx) => {
     trx("events")
-      .where({ id: id })
+      .where({id: id})
       .update({
         name,
         description,
@@ -125,7 +125,7 @@ const handleUpdateEvent = (req, res, db) => {
           // insert security measures
           return trx.transaction((trx) => {
             trx("eventsecuritymeasures")
-              .where({ eventid: event?.[0]?.id })
+              .where({eventid: event?.[0]?.id})
               .del()
               .then(() => {
                 return trx("eventsecuritymeasures")
@@ -143,22 +143,22 @@ const handleUpdateEvent = (req, res, db) => {
                       },
                       "message": "Ok",
                       "success": true
-                  });
+                    });
                   });
               })
               .then(trx.commit)
               .catch(trx.rollback);
-          })    .catch((err) => res.status(500).json({
-      "success": false,
-      "code": 500,
-      "data": {},
-      "message": "Internal Server Error",
-      "errors": {
-          "error": [
-            err
-          ]
-      }
-  }));
+          }).catch((err) => res.status(500).json({
+            "success": false,
+            "code": 500,
+            "data": {},
+            "message": "Internal Server Error",
+            "errors": {
+              "error": [
+                err
+              ]
+            }
+          }));
         } else {
           res.json({
             "code": 200,
@@ -167,7 +167,7 @@ const handleUpdateEvent = (req, res, db) => {
             },
             "message": "Ok",
             "success": true
-        });
+          });
         }
       })
       .then(trx.commit)
@@ -178,53 +178,51 @@ const handleUpdateEvent = (req, res, db) => {
     "data": {},
     "message": "Internal Server Error",
     "errors": {
+      "error": [
+        err
+      ]
+    }
+  }));
+};
+
+const handleDeleteEvent = (req, res, db) => {
+  const {id} = req.params;
+
+  db("events")
+    .where({id: id})
+    .update({isRemoved: true})
+    .returning("*")
+    .then((events) => {
+      res.json({
+        "code": 200,
+        "data": {
+          "events": events[0]
+        },
+        "message": "Ok",
+        "success": true
+      });
+    })
+    .catch((err) => res.status(500).json({
+      "success": false,
+      "code": 500,
+      "data": {},
+      "message": "Internal Server Error",
+      "errors": {
         "error": [
           err
         ]
-    }
-}));
+      }
+    }));
 };
 
-const handleUpdateEvents = (req, res, db) => {
-    const { id } = req.params;
-    const { isRemoved } = req.body;
-  
-    db("events")
-      .where({ id: id })
-      .update({
-        isRemoved,
-      })
-      .returning("*")
-      .then((events) => {
-        res.json({
-          "code": 200,
-          "data": {
-            "events": events[0]
-          },
-          "message": "Ok",
-          "success": true
-      });
-      })
-          .catch((err) => res.status(500).json({
-        "success": false,
-        "code": 500,
-        "data": {},
-        "message": "Internal Server Error",
-        "errors": {
-            "error": [
-              err
-            ]
-        }
-    }));
-  };
-
-
 const handleGetEvent = (req, res, db) => {
-  const { id } = req.params;
+  const {id} = req.params;
   db("events")
     .where("events.id", "=", id)
     .select([
       "events.*",
+      "category.name AS categoyName",
+      "category.img AS categoryImg",
       db.raw(
         "ARRAY_AGG(eventsecuritymeasures.securitymeasuresid) as securitymeasuresids"
       ),
@@ -234,7 +232,12 @@ const handleGetEvent = (req, res, db) => {
       "events.id",
       "eventsecuritymeasures.eventid"
     )
-    .groupBy("events.id")
+    .leftJoin(
+      "category",
+      "category.id",
+      "events.categoryid",
+    )
+    .groupBy("events.id", "category.id")
     .then((event) => {
       res.json({
         "code": 200,
@@ -247,7 +250,7 @@ const handleGetEvent = (req, res, db) => {
         },
         "message": "Ok",
         "success": true
-    });
+      });
     })
     .catch((err) => res.status(500).json({
       "success": false,
@@ -255,42 +258,42 @@ const handleGetEvent = (req, res, db) => {
       "data": {},
       "message": "Internal Server Error",
       "errors": {
-          "error": [
-            err
-          ]
+        "error": [
+          err
+        ]
       }
-  }));
+    }));
 };
 
 const handleGetEvents = (req, res, db) => {
-  const { session } = req;
-  
+  const {session} = req;
+
   db("events")
-  .join(
-    "category",
-    "category.id",
-    "events.categoryid",
-  )
-  .select(
-    "events.id",
-    "events.name",
-    "events.description",
-    "category.name AS categoyName",
-    "events.guestlimit",
-    "events.direction",
-    "events.startdate",
-    "events.enddate",
-    "events.createdat",
-    "events.userid",
-    "events.isRemoved",
-    "events.securityValue",
-    "events.securityCategory",
-    "events.img",
-    "category.img AS categoryImg",
-    "category.imgBg AS categoryImgBg",
-  )
-  .orderBy('id', 'desc')
-    .where("isRemoved","=", false )
+    .join(
+      "category",
+      "category.id",
+      "events.categoryid",
+    )
+    .select(
+      "events.id",
+      "events.name",
+      "events.description",
+      "category.name AS categoyName",
+      "events.guestlimit",
+      "events.direction",
+      "events.startdate",
+      "events.enddate",
+      "events.createdat",
+      "events.userid",
+      "events.isRemoved",
+      "events.securityValue",
+      "events.securityCategory",
+      "events.img",
+      "category.img AS categoryImg"
+    )
+    .orderBy('id', 'desc')
+    .where("userid", "=", session.user.id)
+    .where("isRemoved", "=", false)
     .returning("*")
     .then((events) => {
       res.json({
@@ -300,7 +303,7 @@ const handleGetEvents = (req, res, db) => {
         },
         "message": "Ok",
         "success": true
-    });
+      });
     })
     .catch((err) => res.status(500).json({
       "success": false,
@@ -308,11 +311,11 @@ const handleGetEvents = (req, res, db) => {
       "data": {},
       "message": "Internal Server Error",
       "errors": {
-          "error": [
-            err
-          ]
+        "error": [
+          err
+        ]
       }
-  }));
+    }));
 };
 
 module.exports = {
@@ -320,5 +323,5 @@ module.exports = {
   handleUpdateEvent: handleUpdateEvent,
   handleGetEvents: handleGetEvents,
   handleGetEvent: handleGetEvent,
-  handleUpdateEvents: handleUpdateEvents,
+  handleDeleteEvent: handleDeleteEvent,
 };

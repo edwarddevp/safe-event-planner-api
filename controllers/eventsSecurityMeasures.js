@@ -2,17 +2,7 @@ const handleGetEventSecurityMeasures = (req, res, db) => {
   const { eventId } = req.params;
 
   db("eventsecuritymeasures")
-    .join(
-      "securitymeasures",
-      "securitymeasures.id",
-      "eventsecuritymeasures.securitymeasuresid"
-    )
-    .select(
-      "securitymeasures.id",
-      "securitymeasures.name",
-      "securitymeasures.description",
-      "securitymeasures.value"
-    )
+    .select("securitymeasuresid")
     .where("eventid", "=", eventId)
     .then((securityMeasures) => {
       res.json({
@@ -21,7 +11,7 @@ const handleGetEventSecurityMeasures = (req, res, db) => {
           securityMeasure: securityMeasures
         },
         message: "Ok",
-        success: true,
+        success: true, 
       });
     })
     .catch((err) =>
