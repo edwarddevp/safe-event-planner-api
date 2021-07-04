@@ -34,13 +34,6 @@ app.use(bodyParser.json());
 
 app.get('/api/v1', (req, res)=> res.json({ message: 'Welcome to the Api'}))
 
-app.get('/api/v1/posts', verifyToken, (req, res) => {
-      res.json({
-        message:'Post Created...',
-        session: req.session
-      })
-})
-
 /*
  Aspectos a mejorar
   - falta logica de user para eliminar todos sus eventos relacionados y sus dependencias
