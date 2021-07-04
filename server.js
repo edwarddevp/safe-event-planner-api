@@ -22,7 +22,7 @@ const db = knex({
   connection: {
     host: '127.0.0.1',
     user: 'postgres',
-    password: '123',
+    password: 'jose123',
     database: 'safe_event_planner_db'
   }
 });
