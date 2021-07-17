@@ -14,6 +14,7 @@ const guests = require('./controllers/guests');
 const securityMeasures = require('./controllers/securityMeasures');
 const eventsSecurityMeasures = require('./controllers/eventsSecurityMeasures');
 const tasks = require('./controllers/tasks');
+const privacyPolicy = require('./controllers/privacyPolicy');
 
 const { verifyToken } = require('./middlewares/verifyToken');
 
@@ -98,6 +99,9 @@ app.get('/api/v1/users/:id', verifyToken,  (req, res) => { users.handleGetUser(r
 app.put('/api/v1/users/:id', verifyToken,  (req, res) => { users.handleUpdateUser(req, res, db, bcrypt) }) // update
 app.delete('/api/v1/users/:id', verifyToken,  (req, res) => { users.handleDeleteUser(req, res, db) }) // delete
 app.get('/api/v1/users/:id/clean', verifyToken,  (req, res) => { users.handleCleanUser(req, res, db) }) // clean
+
+// privacy policy
+app.get('/privacy-policy',  (req, res) => { privacyPolicy.getPrivacyPolicy(req, res) }) // get all
 
 
 app.listen(process.env.PORT || 3000, ()=> {
